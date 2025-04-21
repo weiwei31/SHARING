@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>商品總金額與贈品計算器</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background-color: #f4f4f4; }
+    .total, .gifts, .discount { font-size: 1.2em; margin-top: 10px; }
+    .order-log { margin-top: 30px; }
+    textarea { width: 100%; height: 200px; }
+  </style>
+</head>
+<body>
+  <h1>商品總金額與贈品計算器</h1>
+  <form id="calculator">
+    <table>
+      <thead>
+        <tr>
+          <th>商品名稱</th>
+          <th>購買數量</th>
+          <th>小計</th>
+        </tr>
+      </thead>
+      <tbody id="product-list"></tbody>
+    </table>
+
+    <label for="discount-code">折扣碼：</label>
+    <input type="text" id="discount-code" placeholder="輸入折扣碼">
+    <div class="discount">折扣：<span id="discount">$0</span></div>
+    <div class="total">總金額：<span id="total">$0</span></div>
+    <div class="gifts">贈品：<span id="gifts">保溫袋</span></div>
+    <button type="button" onclick="saveOrder()">提交此筆訂單</button>
+  </form>
+
+  <div class="order-log">
+    <h2>訂單紀錄</h2>
+    <textarea id="order-log" readonly></textarea>
+    <button onclick="copyOrders()">複製訂單資料</button>
+  </div>
+
+  <script>
+    const pricingRules = {
+      "益生菌": [1580, 1468, 1359, 1199],
+      "頂級魚油": [1780, 1655, 1529, 1349],
+      "epa魚油": [1780, 1655, 1529, 1349],
+      "葉黃素": [1880, 1747, 1615, 1429],
+      "膠原蛋白": [1980, 1841, 1703, 1505],
+      "蔓越莓": [499, 465, 429, 379],
+      "玻尿酸": [499, 465, 429, 379],
+      "維生素c": [499, 465, 429, 379],
+      "海藻鈣": [580, 540, 499, 439],
+      "晚安三秒": [1480, 1375, 1269, 1119],
+      "b群": [1750, 1627, 1505, 1330],
+      "NMN膠囊": [1280, 1189, 1099, 969],
+      "NMN力線體": [5980, 4999, 4580, 3999],
+      "酵素": [980, 911, 846, 745],
+      "蜂膠": [799, 699, 659, 639],
+      "好固力": [1780, 1709, 1635, 1531],
+    };
+
+    const giftRules = [
+      { amount: 18999, gift: "保溫袋 + 海藻鈣 + EPA + 益生菌 + NMN力線體 + 膠原蛋白" },
+      { amount: 11999, gift: "保溫袋 + 海藻鈣 + EPA + 益生菌" },
+      { amount: 6999, gift: "保溫袋 + 海藻鈣 + EPA" },
+      { amount: 3999, gift: "保溫袋 + 海藻鈣" },
+      { amount: 0, gift: "保溫袋" },
+    ];
+
+    const discountCodes = {
+      TXG200: { discount: 200, from: "2025-04-26T14:00:00+08:00", to: "2025-04-26T17:30:00+08:00" },
+      KHH200: { discount: 200, from: "2025-04-27T14:00:00+08:00", to: "2025-04-27T17:30:00+08:00" },
+    };
+
+    const productList = document.getElementById("product-list");
+    const totalDisplay = document.getElementById("total");
+    const discountDisplay = document.getElementById("discount");
+    const giftDisplay = document.getElementById("gifts");
+    const discountInput = document.getElementById("discount-code");
+
+    Object.keys(pricingRules).forEach(name => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${name}</td>
+        <td><input type="number" min="0" value="0" data-name="${name}" style="width:60px"></td>
+        <td class="subtotal" data-name="${name}">$0</td>
+      `;
+      productList.appendChild(row);
+    });
+
+    function getUnitPrice(qty, prices) {
+      if (qty >= 10) return prices[3];
+      if (qty >= 4) return prices[2];
+      if (qty >= 2) return prices[1];
+      return prices[0];
+    }
+
+    function checkDiscountCode(code) {
+      const now = new Date();
+      const entry = discountCodes[code];
+      if (!entry) return 0;
+      const from = new Date(entry.from);
+      const to = new Date(entry.to);
+      return now >= from && now <= to ? entry.discount : 0;
+    }
+
+    function update() {
+      let total = 0;
+      const order = {};
+      document.querySelectorAll("input[type='number']").forEach(input => {
+        const name = input.dataset.name;
+        const qty = parseInt(input.value) || 0;
+        const prices = pricingRules[name];
+        const unitPrice = getUnitPrice(qty, prices);
+        const subtotal = unitPrice * qty;
+        total += subtotal;
+        order[name] = qty;
+        document.querySelector(`.subtotal[data-name='${name}']`).textContent = `$${subtotal}`;
+      });
+
+      const code = discountInput.value.trim();
+      const discount = checkDiscountCode(code);
+      discountDisplay.textContent = `-$${discount}`;
+      const finalTotal = total - discount;
+      totalDisplay.textContent = `$${finalTotal}`;
+      const matchedGift = giftRules.find(rule => finalTotal >= rule.amount);
+      giftDisplay.textContent = matchedGift ? matchedGift.gift : "保溫袋";
+      return { items: order, total, discount, finalTotal, gift: matchedGift?.gift || "保溫袋" };
+    }
+
+    function saveOrder() {
+      const result = update();
+      const log = document.getElementById("order-log");
+      const time = new Date().toLocaleString();
+      log.value += `\n[${time}] 訂單：\n` + JSON.stringify(result, null, 2) + "\n";
+    }
+
+    function copyOrders() {
+      const log = document.getElementById("order-log");
+      log.select();
+      document.execCommand("copy");
+      alert("已複製所有訂單資料！");
+    }
+
+    document.querySelectorAll("input[type='number']").forEach(input => input.addEventListener("input", update));
+    discountInput.addEventListener("input", update);
+  </script>
+</body>
+</html>
