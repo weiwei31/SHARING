@@ -3,7 +3,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>商品總金額與贈品計算器</title>
+  <title></title>
   <style>
     body { font-family: sans-serif; padding: 20px; }
     table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
@@ -15,7 +15,7 @@
   </style>
 </head>
 <body>
-  <h1>商品總金額與贈品計算器</h1>
+  <h1>分享會現場獨享優惠</h1>
   <form id="calculator">
     <table>
       <thead>
@@ -46,7 +46,7 @@
     const pricingRules = {
       "益生菌": [1580, 1468, 1359, 1199],
       "頂級魚油": [1780, 1655, 1529, 1349],
-      "epa魚油": [1780, 1655, 1529, 1349],
+      "EPA魚油": [1780, 1655, 1529, 1349],
       "葉黃素": [1880, 1747, 1615, 1429],
       "膠原蛋白": [1980, 1841, 1703, 1505],
       "蔓越莓": [499, 465, 429, 379],
@@ -71,9 +71,8 @@
     ];
 
     const discountCodes = {
-      TXG200: { discount: 200, from: "2025-04-26T14:00:00+08:00", to: "2025-04-26T17:30:00+08:00" },
-      KHH200: { discount: 200, from: "2025-04-27T14:00:00+08:00", to: "2025-04-27T17:30:00+08:00" },
-    };
+      200: { discount: 200, from: "2025-04-23T14:00:00+08:00", to: "2025-04-26T17:30:00+08:00" },
+          };
 
     const productList = document.getElementById("product-list");
     const totalDisplay = document.getElementById("total");
