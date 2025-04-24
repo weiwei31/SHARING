@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -10,8 +9,6 @@
     th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
     th { background-color: #f4f4f4; }
     .total, .gifts, .discount { font-size: 1.2em; margin-top: 10px; }
-    .order-log { margin-top: 30px; }
-    textarea { width: 100%; height: 200px; }
   </style>
 </head>
 <body>
@@ -22,6 +19,7 @@
         <tr>
           <th>商品名稱</th>
           <th>購買數量</th>
+          <th>單價</th>
           <th>小計</th>
         </tr>
       </thead>
@@ -33,14 +31,7 @@
     <div class="discount">折扣：<span id="discount">$0</span></div>
     <div class="total">總金額：<span id="total">$0</span></div>
     <div class="gifts">贈品：<span id="gifts">保溫袋</span></div>
-    <button type="button" onclick="saveOrder()">提交此筆訂單</button>
   </form>
-
-  <div class="order-log">
-    <h2>訂單紀錄</h2>
-    <textarea id="order-log" readonly></textarea>
-    <button onclick="copyOrders()">複製訂單資料</button>
-  </div>
 
   <script>
     const pricingRules = {
@@ -72,7 +63,7 @@
 
     const discountCodes = {
       200: { discount: 200, from: "2025-04-23T14:00:00+08:00", to: "2025-04-26T17:30:00+08:00" },
-          };
+    };
 
     const productList = document.getElementById("product-list");
     const totalDisplay = document.getElementById("total");
@@ -85,6 +76,7 @@
       row.innerHTML = `
         <td>${name}</td>
         <td><input type="number" min="0" value="0" data-name="${name}" style="width:60px"></td>
+        <td class="unitprice" data-name="${name}">$0</td>
         <td class="subtotal" data-name="${name}">$0</td>
       `;
       productList.appendChild(row);
@@ -108,7 +100,6 @@
 
     function update() {
       let total = 0;
-      const order = {};
       document.querySelectorAll("input[type='number']").forEach(input => {
         const name = input.dataset.name;
         const qty = parseInt(input.value) || 0;
@@ -116,7 +107,7 @@
         const unitPrice = getUnitPrice(qty, prices);
         const subtotal = unitPrice * qty;
         total += subtotal;
-        order[name] = qty;
+        document.querySelector(`.unitprice[data-name='${name}']`).textContent = `$${unitPrice}`;
         document.querySelector(`.subtotal[data-name='${name}']`).textContent = `$${subtotal}`;
       });
 
@@ -127,21 +118,6 @@
       totalDisplay.textContent = `$${finalTotal}`;
       const matchedGift = giftRules.find(rule => finalTotal >= rule.amount);
       giftDisplay.textContent = matchedGift ? matchedGift.gift : "保溫袋";
-      return { items: order, total, discount, finalTotal, gift: matchedGift?.gift || "保溫袋" };
-    }
-
-    function saveOrder() {
-      const result = update();
-      const log = document.getElementById("order-log");
-      const time = new Date().toLocaleString();
-      log.value += `\n[${time}] 訂單：\n` + JSON.stringify(result, null, 2) + "\n";
-    }
-
-    function copyOrders() {
-      const log = document.getElementById("order-log");
-      log.select();
-      document.execCommand("copy");
-      alert("已複製所有訂單資料！");
     }
 
     document.querySelectorAll("input[type='number']").forEach(input => input.addEventListener("input", update));
