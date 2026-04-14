@@ -6,12 +6,11 @@
   <title>現場優惠計算機</title>
   <style>
     :root {
-      /* 導入你的常用色號 */
       --p-main-color: #26C6B6;
       --p-main-light: #53c4a4;
       --p-second-color: #68a31a;
-      --p-focus-color: #F44336; /* 金額強調色 */
-      --p-font-color: #5b5959; /* 主要字體顏色 */
+      --p-focus-color: #F44336; 
+      --p-font-color: #5b5959; 
       --bg-color: #f8f9fa;
     }
     
@@ -20,17 +19,18 @@
       background-color: var(--bg-color); 
       color: var(--p-font-color);
       margin: 0; 
-      padding-bottom: 150px; 
+      padding-bottom: 160px; 
     }
 
+    /* 標題移除底色，深灰文字 */
     h1 { 
       text-align: center; 
-      padding: 15px 0; 
-      background: var(--p-main-color); 
-      color: white; 
+      padding: 25px 0 15px 0; 
+      background: transparent; 
+      color: var(--p-font-color); 
       margin: 0; 
-      font-size: 1.2rem; 
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+      font-size: 1.4rem; 
+      font-weight: bold;
     }
     
     .container { padding: 10px; max-width: 600px; margin: auto; }
@@ -66,50 +66,56 @@
     
     .product-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
     .product-name { font-weight: bold; font-size: 0.95rem; color: var(--p-font-color); }
-    /* 個別商品小計使用 focus-color */
     .product-subtotal { font-weight: bold; font-size: 0.95rem; color: var(--p-focus-color) !important; }
 
+    /* 單價金額使用主色調 */
     .product-price-info { color: #888; font-size: 0.85rem; }
-    .unit-price-tag { color: var(--p-focus-color); font-weight: bold; }
+    .unit-price-tag { color: var(--p-main-color); font-weight: bold; }
 
-    /* 數量控制 */
+    /* 加減按鈕文字用深灰色 */
     .qty-control { display: flex; align-items: center; margin-top: 8px; }
     .qty-btn {
       width: 44px; height: 44px; border: 1px solid #ddd; background: #fdfdfd;
       font-size: 1.5rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-      color: var(--p-main-color); /* 按鈕符號使用主色 */
+      color: var(--p-font-color); 
     }
     .qty-input { width: 50px; text-align: center; border: none; font-size: 1.2rem; font-weight: bold; background: transparent; color: var(--p-font-color); }
 
     /* 底部資訊列 */
     .bottom-bar {
       position: fixed; bottom: 0; left: 0; right: 0; background: white;
-      padding: 15px; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 100;
+      padding: 15px; box-shadow: 0 -2px 15px rgba(0,0,0,0.08); z-index: 100;
     }
-    .summary-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9rem; }
-    /* 贈品使用 second-color (綠色) */
-    #gifts { color: var(--p-second-color) !important; font-weight: bold; }
+    .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
+    
+    /* 目前贈品使用主色調 */
+    #gifts { color: var(--p-main-color) !important; font-weight: bold; text-align: right; flex: 1; margin-left: 10px; }
 
-    /* 應付總額使用 focus-color (紅色) */
+    /* 應付總額使用紅色強調色 */
     .total-row { 
       display: flex; 
       justify-content: space-between; 
-      font-size: 1.5rem; 
+      font-size: 1.6rem; 
       font-weight: bold; 
       color: var(--p-focus-color) !important; 
-      margin-bottom: 10px; 
+      margin-bottom: 12px; 
     }
     
+    /* 清空按鈕：恢復深灰底色 + 白色文字 */
     .btn-reset { 
       width: 100%; 
-      background: var(--p-font-color); 
-      color: white; 
-      border: none; 
-      padding: 14px; 
+      background-color: var(--p-font-color); 
+      color: #ffffff; 
+      border: none;
+      padding: 16px; 
       border-radius: 8px; 
       font-weight: bold; 
       font-size: 1.1rem; 
       cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .btn-reset:active {
+      background-color: #444;
     }
   </style>
 </head>
@@ -131,7 +137,7 @@
     <span>應付總額</span>
     <span id="total">$0</span>
   </div>
-  <button class="btn-reset" onclick="clearQuantities()">清空重置 </button>
+  <button class="btn-reset" onclick="clearQuantities()">清空重置</button>
 </div>
 
 <script>
