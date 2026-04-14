@@ -3,18 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>2026 母親節檔期優惠計算機</title>
+  <title>現場優惠計算機</title>
   <style>
     :root {
       --primary-color: #007bff;
       --bg-color: #f8f9fa;
+      --price-color: #e44d26;
     }
     body { font-family: -apple-system, "Noto Sans TC", sans-serif; background-color: var(--bg-color); margin: 0; padding-bottom: 120px; }
     h1 { text-align: center; padding: 15px 0; background: white; margin: 0; font-size: 1.2rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     
     .container { padding: 10px; max-width: 600px; margin: auto; }
 
-    /* 滿額提醒 - 固定在上方 */
+    /* 滿額提醒 */
     .promo-banner {
       background: #fff3cd; color: #856404; padding: 12px; border-radius: 8px;
       margin-bottom: 15px; font-size: 0.95rem; text-align: center; border: 1px solid #ffeeba;
@@ -29,11 +30,16 @@
     }
     .product-img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; margin-right: 12px; background: #eee; }
     .product-info { flex: 1; }
-    .product-name { font-weight: bold; font-size: 0.95rem; margin-bottom: 4px; }
-    .product-price-info { color: #666; font-size: 0.85rem; }
-    .unit-price-tag { color: #e44d26; font-weight: bold; }
+    
+    /* 調整品項名稱與小計大小一致 */
+    .product-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .product-name { font-weight: bold; font-size: 0.95rem; }
+    .product-subtotal { font-weight: bold; font-size: 0.95rem; color: var(--price-color); }
 
-    /* 數量控制按鈕加大 */
+    .product-price-info { color: #666; font-size: 0.85rem; }
+    .unit-price-tag { color: var(--price-color); font-weight: bold; }
+
+    /* 數量控制按鈕 */
     .qty-control { display: flex; align-items: center; margin-top: 8px; }
     .qty-btn {
       width: 44px; height: 44px; border: 1px solid #ddd; background: #fdfdfd;
@@ -41,19 +47,19 @@
     }
     .qty-input { width: 50px; text-align: center; border: none; font-size: 1.2rem; font-weight: bold; background: transparent; }
 
-    /* 底部計算資訊列 */
+    /* 底部資訊列 */
     .bottom-bar {
       position: fixed; bottom: 0; left: 0; right: 0; background: white;
       padding: 15px; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 100;
     }
     .summary-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9rem; }
-    .total-row { display: flex; justify-content: space-between; font-size: 1.5rem; font-weight: bold; color: #e44d26; margin-bottom: 10px; }
+    .total-row { display: flex; justify-content: space-between; font-size: 1.5rem; font-weight: bold; color: var(--price-color); margin-bottom: 10px; }
     .btn-reset { width: 100%; background: #333; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 1.1rem; }
   </style>
 </head>
 <body>
 
-<h1> 2026母親節檔期現場優惠計算機</h1>
+<h1>現場優惠計算機</h1>
 
 <div class="container">
   <div id="promo-banner" class="promo-banner">目前總額：$0</div>
@@ -87,7 +93,7 @@
     "野獸黑馬卡": { prices: [698, 559, 398, 339], img: "https://blog.dietician.com.tw/images/z2/b8ba50b144cf43a0a861f04eb6ea06c7.webp" },
     "膠原蛋白": { prices: [1980, 1841, 1703, 1505], img: "https://blog.dietician.com.tw/images/z2/a44d7dbd34fb4a85c6c805f0ebb0e2b4.webp" },
     "NMN酵母賦活": { prices: [1280, 1189, 1099, 969], img: "https://blog.dietician.com.tw/images/z2/50aa87bcc86156dfb9b3a2575a3b385e.webp" },
-    "我的好固力": { prices: [1780, 1709, 1635, 1531], img: "https://blog.dietician.com.tw/images/z2/5686fd0fcb703ffa6a17b4439ecb46f5.webp" },
+    "我的好固力": { prices: [1780, 1709, 1635, 1531], img: "https://blog.dietician.com.tw/images/z2/f1b0fa6abb0ed14ad0768cd758467503.webp" },
     "PPN6蜂膠": { prices: [799, 699, 659, 639], img: "https://blog.dietician.com.tw/images/z2/2132b71df3b1236801fe2260b35286ad.webp" },
     "透明質酸鈉MAX": { prices: [499, 465, 429, 379], img: "https://blog.dietician.com.tw/images/z2/865674b7e389433d815efb72fec0b003.webp" },
     "國民維生素C": { prices: [499, 465, 429, 379], img: "https://blog.dietician.com.tw/images/z2/d925b7438fde924cc60e219fdbf55dd2.webp" }
@@ -111,7 +117,10 @@
     card.innerHTML = `
       <img src="${data.img}" class="product-img" alt="${name}">
       <div class="product-info">
-        <div class="product-name">${name}</div>
+        <div class="product-header">
+          <span class="product-name">${name}</span>
+          <span class="product-subtotal" id="subtotal-${name}">$0</span>
+        </div>
         <div class="product-price-info">單價: <span class="unit-price-tag" id="price-${name}">$${data.prices[0]}</span></div>
         <div class="qty-control">
           <button class="qty-btn" onclick="changeQty('${name}', -1)">-</button>
@@ -144,18 +153,28 @@
       const qty = parseInt(document.getElementById(`qty-${name}`).value) || 0;
       const prices = pricingRules[name].prices;
       const unitPrice = getUnitPrice(qty, prices);
-      total += unitPrice * qty;
+      const subtotal = unitPrice * qty;
+      
+      total += subtotal;
+      
+      // 更新個別商品的單價顯示
       document.getElementById(`price-${name}`).textContent = `$${unitPrice}`;
+      // 更新個別商品的小計顯示
+      document.getElementById(`subtotal-${name}`).textContent = `$${subtotal.toLocaleString()}`;
     });
 
-    document.getElementById("total").textContent = `$${total}`;
+    // 更新底部總額
+    document.getElementById("total").textContent = `$${total.toLocaleString()}`;
+
+    // 贈品邏輯
     const matchedGift = [...giftRules].sort((a,b) => b.amount - a.amount).find(rule => total >= rule.amount);
     document.getElementById("gifts").textContent = matchedGift ? matchedGift.gift : "無";
 
+    // 滿額提醒
     const nextGoal = [...giftRules].sort((a,b) => a.amount - b.amount).find(rule => total < rule.amount);
     const banner = document.getElementById("promo-banner");
     if (nextGoal) {
-      banner.innerHTML = `目前：$${total}，還差 <span class="next-goal">$${nextGoal.amount - total}</span> 即可獲得 <span class="next-goal">${nextGoal.gift}</span>`;
+      banner.innerHTML = `目前：$${total.toLocaleString()}，還差 <span class="next-goal">$${(nextGoal.amount - total).toLocaleString()}</span> 即可獲得 <span class="next-goal">${nextGoal.gift}</span>`;
     } else {
       banner.innerHTML = "🎉 已達成最高滿額贈門檻！";
     }
