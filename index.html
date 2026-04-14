@@ -3,49 +3,83 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> 2026母親節現場優惠計算機</title>
+  <title>現場優惠計算機</title>
   <style>
     :root {
-      --primary-color: #007bff;
+      /* 導入你的常用色號 */
+      --p-main-color: #26C6B6;
+      --p-main-light: #53c4a4;
+      --p-second-color: #68a31a;
+      --p-focus-color: #F44336; /* 金額強調色 */
+      --p-font-color: #5b5959; /* 主要字體顏色 */
       --bg-color: #f8f9fa;
-      --price-color: #e44d26;
     }
-    body { font-family: -apple-system, "Noto Sans TC", sans-serif; background-color: var(--bg-color); margin: 0; padding-bottom: 120px; }
-    h1 { text-align: center; padding: 15px 0; background: white; margin: 0; font-size: 1.2rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    
+    body { 
+      font-family: -apple-system, "Noto Sans TC", sans-serif; 
+      background-color: var(--bg-color); 
+      color: var(--p-font-color);
+      margin: 0; 
+      padding-bottom: 150px; 
+    }
+
+    h1 { 
+      text-align: center; 
+      padding: 15px 0; 
+      background: var(--p-main-color); 
+      color: white; 
+      margin: 0; 
+      font-size: 1.2rem; 
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+    }
     
     .container { padding: 10px; max-width: 600px; margin: auto; }
 
     /* 滿額提醒 */
     .promo-banner {
-      background: #fff3cd; color: #856404; padding: 12px; border-radius: 8px;
-      margin-bottom: 15px; font-size: 0.95rem; text-align: center; border: 1px solid #ffeeba;
-      position: sticky; top: 10px; z-index: 10;
+      background: #fff3cd; 
+      color: #856404; 
+      padding: 12px; 
+      border-radius: 8px;
+      margin-bottom: 15px; 
+      font-size: 0.95rem; 
+      text-align: center; 
+      border: 1px solid #ffeeba;
+      position: sticky; 
+      top: 10px; 
+      z-index: 10;
     }
-    .next-goal { font-weight: bold; color: #d9534f; }
+    .next-goal { font-weight: bold; color: var(--p-focus-color); }
 
     /* 商品卡片 */
     .product-card {
-      background: white; border-radius: 12px; padding: 12px; margin-bottom: 10px;
-      display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      background: white; 
+      border-radius: 12px; 
+      padding: 12px; 
+      margin-bottom: 10px;
+      display: flex; 
+      align-items: center; 
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
     .product-img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; margin-right: 12px; background: #eee; }
     .product-info { flex: 1; }
     
-    /* 調整品項名稱與小計大小一致 */
     .product-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-    .product-name { font-weight: bold; font-size: 0.95rem; }
-    .product-subtotal { font-weight: bold; font-size: 0.95rem; color: var(--price-color); }
+    .product-name { font-weight: bold; font-size: 0.95rem; color: var(--p-font-color); }
+    /* 個別商品小計使用 focus-color */
+    .product-subtotal { font-weight: bold; font-size: 0.95rem; color: var(--p-focus-color) !important; }
 
-    .product-price-info { color: #666; font-size: 0.85rem; }
-    .unit-price-tag { color: var(--price-color); font-weight: bold; }
+    .product-price-info { color: #888; font-size: 0.85rem; }
+    .unit-price-tag { color: var(--p-focus-color); font-weight: bold; }
 
-    /* 數量控制按鈕 */
+    /* 數量控制 */
     .qty-control { display: flex; align-items: center; margin-top: 8px; }
     .qty-btn {
       width: 44px; height: 44px; border: 1px solid #ddd; background: #fdfdfd;
       font-size: 1.5rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--p-main-color); /* 按鈕符號使用主色 */
     }
-    .qty-input { width: 50px; text-align: center; border: none; font-size: 1.2rem; font-weight: bold; background: transparent; }
+    .qty-input { width: 50px; text-align: center; border: none; font-size: 1.2rem; font-weight: bold; background: transparent; color: var(--p-font-color); }
 
     /* 底部資訊列 */
     .bottom-bar {
@@ -53,13 +87,35 @@
       padding: 15px; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 100;
     }
     .summary-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9rem; }
-    .total-row { display: flex; justify-content: space-between; font-size: 1.5rem; font-weight: bold; color: var(--price-color); margin-bottom: 10px; }
-    .btn-reset { width: 100%; background: #333; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 1.1rem; }
+    /* 贈品使用 second-color (綠色) */
+    #gifts { color: var(--p-second-color) !important; font-weight: bold; }
+
+    /* 應付總額使用 focus-color (紅色) */
+    .total-row { 
+      display: flex; 
+      justify-content: space-between; 
+      font-size: 1.5rem; 
+      font-weight: bold; 
+      color: var(--p-focus-color) !important; 
+      margin-bottom: 10px; 
+    }
+    
+    .btn-reset { 
+      width: 100%; 
+      background: var(--p-font-color); 
+      color: white; 
+      border: none; 
+      padding: 14px; 
+      border-radius: 8px; 
+      font-weight: bold; 
+      font-size: 1.1rem; 
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
-<h1> 2026母親節現場優惠計算機</h1>
+<h1>現場優惠計算機</h1>
 
 <div class="container">
   <div id="promo-banner" class="promo-banner">目前總額：$0</div>
@@ -69,13 +125,13 @@
 <div class="bottom-bar">
   <div class="summary-row">
     <span>目前贈品：</span>
-    <span id="gifts" style="color:#28a745; font-weight:bold;">益生菌5入精裝組</span>
+    <span id="gifts">益生菌5入精裝組</span>
   </div>
   <div class="total-row">
     <span>應付總額</span>
     <span id="total">$0</span>
   </div>
-  <button class="btn-reset" onclick="clearQuantities()">清空重置</button>
+  <button class="btn-reset" onclick="clearQuantities()">清空重置 / 下一組客人</button>
 </div>
 
 <script>
@@ -154,23 +210,16 @@
       const prices = pricingRules[name].prices;
       const unitPrice = getUnitPrice(qty, prices);
       const subtotal = unitPrice * qty;
-      
       total += subtotal;
-      
-      // 更新個別商品的單價顯示
       document.getElementById(`price-${name}`).textContent = `$${unitPrice}`;
-      // 更新個別商品的小計顯示
       document.getElementById(`subtotal-${name}`).textContent = `$${subtotal.toLocaleString()}`;
     });
 
-    // 更新底部總額
     document.getElementById("total").textContent = `$${total.toLocaleString()}`;
 
-    // 贈品邏輯
     const matchedGift = [...giftRules].sort((a,b) => b.amount - a.amount).find(rule => total >= rule.amount);
     document.getElementById("gifts").textContent = matchedGift ? matchedGift.gift : "無";
 
-    // 滿額提醒
     const nextGoal = [...giftRules].sort((a,b) => a.amount - b.amount).find(rule => total < rule.amount);
     const banner = document.getElementById("promo-banner");
     if (nextGoal) {
