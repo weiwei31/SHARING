@@ -22,7 +22,7 @@
       padding-bottom: 160px; 
     }
 
-    /* 標題移除底色，文字改為深灰色 */
+    /* 標題無底色，深灰文字 */
     h1 { 
       text-align: center; 
       padding: 25px 0 15px 0; 
@@ -101,16 +101,20 @@
       margin-bottom: 12px; 
     }
     
+    /* 清空重置按鈕：深灰底 + 白字 */
     .btn-reset { 
       width: 100%; 
-      background: #f0f0f0; 
-      color: var(--p-font-color); 
-      border: 1px solid #ddd;
+      background: var(--p-font-color); 
+      color: white; 
+      border: none;
       padding: 14px; 
       border-radius: 8px; 
       font-weight: bold; 
       font-size: 1.1rem; 
       cursor: pointer;
+    }
+    .btn-reset:active {
+      opacity: 0.8;
     }
   </style>
 </head>
@@ -182,61 +186,4 @@
         <div class="qty-control">
           <button class="qty-btn" onclick="changeQty('${name}', -1)">-</button>
           <input type="number" class="qty-input" id="qty-${name}" value="0" min="0" oninput="update()">
-          <button class="qty-btn" onclick="changeQty('${name}', 1)">+</button>
-        </div>
-      </div>
-    `;
-    productList.appendChild(card);
-  });
-
-  function changeQty(name, delta) {
-    const input = document.getElementById(`qty-${name}`);
-    let val = parseInt(input.value) || 0;
-    val = Math.max(0, val + delta);
-    input.value = val;
-    update();
-  }
-
-  function getUnitPrice(qty, prices) {
-    if (qty >= 10) return prices[3];
-    if (qty >= 4) return prices[2];
-    if (qty >= 2) return prices[1];
-    return prices[0];
-  }
-
-  function update() {
-    let total = 0;
-    Object.keys(pricingRules).forEach(name => {
-      const qty = parseInt(document.getElementById(`qty-${name}`).value) || 0;
-      const prices = pricingRules[name].prices;
-      const unitPrice = getUnitPrice(qty, prices);
-      const subtotal = unitPrice * qty;
-      total += subtotal;
-      document.getElementById(`price-${name}`).textContent = `$${unitPrice}`;
-      document.getElementById(`subtotal-${name}`).textContent = `$${subtotal.toLocaleString()}`;
-    });
-
-    document.getElementById("total").textContent = `$${total.toLocaleString()}`;
-
-    const matchedGift = [...giftRules].sort((a,b) => b.amount - a.amount).find(rule => total >= rule.amount);
-    document.getElementById("gifts").textContent = matchedGift ? matchedGift.gift : "無";
-
-    const nextGoal = [...giftRules].sort((a,b) => a.amount - b.amount).find(rule => total < rule.amount);
-    const banner = document.getElementById("promo-banner");
-    if (nextGoal) {
-      banner.innerHTML = `目前：$${total.toLocaleString()}，還差 <span class="next-goal">$${(nextGoal.amount - total).toLocaleString()}</span> 即可獲得 <span class="next-goal">${nextGoal.gift}</span>`;
-    } else {
-      banner.innerHTML = "🎉 已達成最高滿額贈門檻！";
-    }
-  }
-
-  function clearQuantities() {
-    document.querySelectorAll(".qty-input").forEach(input => input.value = 0);
-    update();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  update();
-</script>
-</body>
-</html>
+          <button class="qty-btn
