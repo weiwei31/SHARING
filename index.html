@@ -1,3 +1,8 @@
+那對小箭頭是瀏覽器對「數字輸入框（`<input type="number">`）」預設的內建樣式，稱作 **Spinner**。雖然方便滑鼠點擊，但在手機上或追求畫面簡潔時，通常會把它隱藏掉。
+
+我已經在下面的 CSS 中加入了隱藏 Spinner 的程式碼，並順手微調了按鈕間距，讓畫面更乾淨：
+
+```html
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -22,7 +27,6 @@
       padding-bottom: 160px; 
     }
 
-    /* 標題移除底色，深灰文字 */
     h1 { 
       text-align: center; 
       padding: 25px 0 15px 0; 
@@ -35,7 +39,6 @@
     
     .container { padding: 10px; max-width: 600px; margin: auto; }
 
-    /* 滿額提醒 */
     .promo-banner {
       background: #fff3cd; 
       color: #856404; 
@@ -51,7 +54,6 @@
     }
     .next-goal { font-weight: bold; color: var(--p-focus-color); }
 
-    /* 商品卡片 */
     .product-card {
       background: white; 
       border-radius: 12px; 
@@ -66,42 +68,52 @@
     
     .product-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
     .product-name { font-weight: bold; font-size: 0.95rem; color: var(--p-font-color); }
-    .product-subtotal { font-weight: bold; font-size: 0.95rem; color: var(--p-focus-color) !important; }
+    .product-subtotal { font-weight: bold; font-size: 0.95rem; color: var(--p-focus-color); }
 
-    /* 單價金額使用主色調 */
     .product-price-info { color: #888; font-size: 0.85rem; }
     .unit-price-tag { color: var(--p-main-color); font-weight: bold; }
 
-    /* 加減按鈕文字用深灰色 */
     .qty-control { display: flex; align-items: center; margin-top: 8px; }
     .qty-btn {
       width: 44px; height: 44px; border: 1px solid #ddd; background: #fdfdfd;
       font-size: 1.5rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;
       color: var(--p-font-color); 
     }
-    .qty-input { width: 50px; text-align: center; border: none; font-size: 1.2rem; font-weight: bold; background: transparent; color: var(--p-font-color); }
 
-    /* 底部資訊列 */
+    /* --- 關鍵：隱藏數字輸入框旁邊的上下箭頭 --- */
+    .qty-input { 
+      width: 50px; 
+      text-align: center; 
+      border: none; 
+      font-size: 1.2rem; 
+      font-weight: bold; 
+      background: transparent; 
+      color: var(--p-font-color);
+      -moz-appearance: textfield; /* Firefox */
+    }
+    /* Chrome, Safari, Edge, Opera */
+    .qty-input::-webkit-outer-spin-button,
+    .qty-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
     .bottom-bar {
       position: fixed; bottom: 0; left: 0; right: 0; background: white;
       padding: 15px; box-shadow: 0 -2px 15px rgba(0,0,0,0.08); z-index: 100;
     }
     .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
-    
-    /* 目前贈品使用主色調 */
-    #gifts { color: var(--p-main-color) !important; font-weight: bold; text-align: right; flex: 1; margin-left: 10px; }
+    #gifts { color: var(--p-main-color); font-weight: bold; text-align: right; flex: 1; margin-left: 10px; }
 
-    /* 應付總額使用紅色強調色 */
     .total-row { 
       display: flex; 
       justify-content: space-between; 
       font-size: 1.6rem; 
       font-weight: bold; 
-      color: var(--p-focus-color) !important; 
+      color: var(--p-focus-color); 
       margin-bottom: 12px; 
     }
     
-    /* 清空按鈕：恢復深灰底色 + 白色文字 */
     .btn-reset { 
       width: 100%; 
       background-color: var(--p-font-color); 
@@ -114,14 +126,11 @@
       cursor: pointer;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .btn-reset:active {
-      background-color: #444;
-    }
   </style>
 </head>
 <body>
 
-<h1>2026周年慶限定優惠</h1>
+<h1> 2026周年慶限定優惠</h1>
 
 <div class="container">
   <div id="promo-banner" class="promo-banner">目前總額：$0</div>
